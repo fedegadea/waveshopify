@@ -1,0 +1,396 @@
+{{ 'ocean-player.js' | asset_url | script_tag }}
+
+<div class="waves-product-features color-{{ section.settings.color_scheme }}">
+
+  {%- if section.settings.show_sound_preview -%}
+  <div class="waves-sound-preview">
+    <p class="waves-sound-label">{{ section.settings.preview_label }}</p>
+    <button id="ocean-play-btn" class="waves-ocean-btn" type="button" aria-label="Reproducir sonido del océano">
+      <span class="ocean-btn-icon">▶</span>
+      <span class="ocean-btn-label">Escuchá el sonido del mar</span>
+      <span class="ocean-btn-waves">
+        <span></span><span></span><span></span><span></span><span></span>
+      </span>
+    </button>
+    <p class="waves-sound-note">{{ section.settings.preview_note }}</p>
+  </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_description -%}
+  <div class="waves-description">
+    <h2 class="waves-desc-title">{{ section.settings.description_title }}</h2>
+    <div class="waves-desc-body">{{ section.settings.description | newline_to_br }}</div>
+  </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_features -%}
+  <div class="waves-features-grid">
+    {%- for i in (1..4) -%}
+      {%- assign icon_key  = 'feature_' | append: i | append: '_icon' -%}
+      {%- assign title_key = 'feature_' | append: i | append: '_title' -%}
+      {%- assign text_key  = 'feature_' | append: i | append: '_text' -%}
+      {%- if section.settings[title_key] != blank -%}
+      <div class="waves-feature-card">
+        <span class="waves-feature-icon">{{ section.settings[icon_key] }}</span>
+        <strong>{{ section.settings[title_key] }}</strong>
+        <p>{{ section.settings[text_key] }}</p>
+      </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_for_who -%}
+  <div class="waves-for-who">
+    <h3>{{ section.settings.for_who_title }}</h3>
+    <ul class="waves-for-who-list">
+      {%- assign items = section.settings.for_who_items | split: '|' -%}
+      {%- for item in items -%}
+        <li>✓ {{ item | strip }}</li>
+      {%- endfor -%}
+    </ul>
+  </div>
+  {%- endif -%}
+
+</div>
+
+<style>
+.waves-product-features {
+  padding: 48px 0 32px;
+  font-family: var(--font-body--family);
+}
+
+/* ── Sound preview button ── */
+.waves-sound-preview {
+  text-align: center;
+  margin-bottom: 48px;
+  padding: 32px 24px;
+  background: linear-gradient(135deg, #0B1F3A 0%, #1565C0 100%);
+  border-radius: 20px;
+}
+.waves-sound-label {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.waves-ocean-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.5);
+  color: #ffffff;
+  border-radius: 60px;
+  padding: 16px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.waves-ocean-btn:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: #fff;
+  transform: scale(1.03);
+}
+.waves-ocean-btn.playing {
+  background: rgba(255,255,255,0.2);
+  border-color: #4FC3F7;
+  box-shadow: 0 0 30px rgba(79,195,247,0.4);
+  animation: waves-pulse 2s ease-in-out infinite;
+}
+.ocean-btn-icon {
+  font-size: 1.1rem;
+}
+.ocean-btn-waves {
+  display: none;
+  gap: 3px;
+  align-items: flex-end;
+  height: 20px;
+}
+.waves-ocean-btn.playing .ocean-btn-waves {
+  display: flex;
+}
+.ocean-btn-waves span {
+  display: block;
+  width: 3px;
+  background: #4FC3F7;
+  border-radius: 2px;
+  animation: waves-bar 1.2s ease-in-out infinite;
+}
+.ocean-btn-waves span:nth-child(1) { height: 8px;  animation-delay: 0s; }
+.ocean-btn-waves span:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+.ocean-btn-waves span:nth-child(3) { height: 20px; animation-delay: 0.3s; }
+.ocean-btn-waves span:nth-child(4) { height: 14px; animation-delay: 0.45s; }
+.ocean-btn-waves span:nth-child(5) { height: 8px;  animation-delay: 0.6s; }
+
+@keyframes waves-bar {
+  0%, 100% { transform: scaleY(0.4); }
+  50%       { transform: scaleY(1); }
+}
+@keyframes waves-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(79,195,247,0.3); }
+  50%       { box-shadow: 0 0 40px rgba(79,195,247,0.6); }
+}
+.waves-sound-note {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.78rem;
+  margin-top: 14px;
+}
+
+/* ── Description ── */
+.waves-description {
+  margin-bottom: 40px;
+}
+.waves-desc-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-foreground-heading);
+  margin-bottom: 16px;
+}
+.waves-desc-body {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-foreground);
+  max-width: 680px;
+}
+
+/* ── Features grid ── */
+.waves-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.waves-feature-card {
+  background: rgb(var(--color-background-rgb) / 0.6);
+  border: 1px solid rgb(var(--color-foreground-rgb) / 0.08);
+  border-radius: 16px;
+  padding: 24px 20px;
+}
+.waves-feature-icon {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 10px;
+}
+.waves-feature-card strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-foreground-heading);
+  margin-bottom: 6px;
+}
+.waves-feature-card p {
+  font-size: 0.85rem;
+  color: var(--color-foreground);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Para quién es ── */
+.waves-for-who {
+  background: linear-gradient(135deg, #EEF6FB, #D4EBF7);
+  border-radius: 16px;
+  padding: 28px 24px;
+}
+.waves-for-who h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0B1F3A;
+  margin-bottom: 16px;
+}
+.waves-for-who-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.waves-for-who-list li {
+  font-size: 0.88rem;
+  color: #0B1F3A;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .waves-features-grid { grid-template-columns: 1fr; }
+  .waves-for-who-list  { grid-template-columns: 1fr; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Caracteristicas del producto",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Esquema de color",
+      "options": [
+        { "value": "scheme-1", "label": "Claro" },
+        { "value": "scheme-5", "label": "Oscuro (Navy)" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Preview de sonido"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sound_preview",
+      "label": "Mostrar boton de preview",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "preview_label",
+      "label": "Texto sobre el boton",
+      "default": "PROBALO ANTES DE COMPRARLO"
+    },
+    {
+      "type": "text",
+      "id": "preview_note",
+      "label": "Nota bajo el boton",
+      "default": "Sonido generado en tiempo real — asi suena nuestro parlante"
+    },
+    {
+      "type": "header",
+      "content": "Descripcion"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Mostrar descripcion",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "description_title",
+      "label": "Titulo descripcion",
+      "default": "El parlante que te lleva al sueno profundo"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descripcion",
+      "default": "Diseñado para personas que saben que dormir bien lo cambia todo. Nuestro parlante reproduce con precision los sonidos de la naturaleza — olas del oceano, lluvia suave, selva al amanecer — creando un ambiente sonoro que bloquea distracciones y prepara tu mente para el descanso profundo.\n\nNo es musica. No es ruido blanco generico. Es la naturaleza tal cual suena, procesada en alta fidelidad para que tu cerebro se relaje de manera natural, sin pastillas ni apps complicadas."
+    },
+    {
+      "type": "header",
+      "content": "Caracteristicas"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_features",
+      "label": "Mostrar caracteristicas",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feature_1_icon",
+      "label": "Icono 1",
+      "default": "🌊"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_title",
+      "label": "Titulo 1",
+      "default": "3 sonidos naturales"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1_text",
+      "label": "Texto 1",
+      "default": "Mar, lluvia y naturaleza. Cada uno grabado en alta fidelidad para un sonido 100% real."
+    },
+    {
+      "type": "text",
+      "id": "feature_2_icon",
+      "label": "Icono 2",
+      "default": "🔋"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_title",
+      "label": "Titulo 2",
+      "default": "12 horas de bateria"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2_text",
+      "label": "Texto 2",
+      "default": "Toda la noche sin interrupciones. Carga via USB-C en 2 horas."
+    },
+    {
+      "type": "text",
+      "id": "feature_3_icon",
+      "label": "Icono 3",
+      "default": "📶"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_title",
+      "label": "Titulo 3",
+      "default": "Bluetooth 5.0 + modo offline"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3_text",
+      "label": "Texto 3",
+      "default": "Conectate al instante o usa los sonidos guardados sin internet."
+    },
+    {
+      "type": "text",
+      "id": "feature_4_icon",
+      "label": "Icono 4",
+      "default": "🛡️"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_title",
+      "label": "Titulo 4",
+      "default": "Garantia 30 dias"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_4_text",
+      "label": "Texto 4",
+      "default": "Si no dormir mejor en 30 dias, te devolvemos el dinero. Sin preguntas."
+    },
+    {
+      "type": "header",
+      "content": "Para quien es ideal"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_for_who",
+      "label": "Mostrar seccion",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "for_who_title",
+      "label": "Titulo",
+      "default": "Ideal para vos si..."
+    },
+    {
+      "type": "textarea",
+      "id": "for_who_items",
+      "label": "Items (separados por |)",
+      "default": "Tardas en dormirte | Vivís en un ambiente ruidoso | Trabajas bajo mucho estres | Sos madre o padre con sueno liviano | Compartis cuarto y te despertás | Querés dejar de depender del celular para dormir"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Caracteristicas del producto"
+    }
+  ]
+}
+{% endschema %}
