@@ -1,55 +1,76 @@
-/* ── WAVES – Paleta Mar / Azul / Blanco / Negro ── */
+/* ══════════════════════════════════════════════
+   WAVES – Paleta Azul Mar / Navy / Blanco / Negro
+   Variables exactas del tema Horizon
+   ══════════════════════════════════════════════ */
+
+/* ── Azules de marca ── */
 :root {
-  --brand-navy:        #0B1F3A;
-  --brand-ocean:       #1565C0;
-  --brand-ocean-hover: #0D47A1;
-  --brand-light:       #EEF6FB;
+  --brand-ocean:       21, 101, 192;   /* #1565C0 */
+  --brand-ocean-hover: 13, 71, 161;    /* #0D47A1 */
+  --brand-navy:        11, 31, 58;     /* #0B1F3A */
+  --brand-light:       238, 246, 251;  /* #EEF6FB */
 }
 
-/* Botones primarios → azul océano */
-.button--primary,
-[class*="button"][class*="primary"],
-button[name="add"],
-.shopify-payment-button__button--unbranded {
-  background-color: var(--brand-ocean) !important;
-  border-color: var(--brand-ocean) !important;
-  color: #fff !important;
-}
-.button--primary:hover,
-[class*="button"][class*="primary"]:hover,
-button[name="add"]:hover {
-  background-color: var(--brand-ocean-hover) !important;
-  border-color: var(--brand-ocean-hover) !important;
-}
-
-/* Variables CSS del tema → sobreescribir con colores de marca */
+/* ── Botones primarios en todos los esquemas ── */
+:root,
 .color-scheme-1,
-[data-color-scheme="scheme-1"],
-.scheme-1 {
-  --color-primary-button-background: 21 101 192;   /* #1565C0 en RGB */
-  --color-primary-button-border: 21 101 192;
-  --color-primary-button-hover-background: 13 71 161;
-  --color-primary-button-hover-border: 13 71 161;
-  --color-foreground-heading: 11 31 58;             /* #0B1F3A */
-  --color-primary: 21 101 192;
+.color-scheme-2,
+.color-scheme-3,
+.color-scheme-4 {
+  --color-primary-button-background:       rgb(21 101 192);
+  --color-primary-button-border:           rgb(21 101 192);
+  --color-primary-button-hover-background: rgb(13 71 161);
+  --color-primary-button-hover-border:     rgb(13 71 161);
+  --color-primary:                         rgb(21 101 192);
+  --color-primary-hover:                   rgb(11 31 58);
+  --color-selected-variant-background:     rgb(21 101 192);
+  --color-selected-variant-border:         rgb(21 101 192);
+  --color-selected-variant-text:           rgb(255 255 255);
+  --color-selected-variant-hover-background: rgb(13 71 161);
+  --color-selected-variant-hover-border:   rgb(13 71 161);
+  --color-selected-variant-hover-text:     rgb(255 255 255);
 }
 
-/* Header → navy */
-.header {
-  --color-background: 11 31 58 !important;
-  --color-foreground: 255 255 255 !important;
-  --color-foreground-heading: 255 255 255 !important;
+/* ── Esquema oscuro (header/hero) → navy ── */
+.color-scheme-5,
+.color-scheme-6 {
+  --color-background:                      rgb(11 31 58);
+  --color-background-rgb:                  11 31 58;
+  --color-foreground:                      rgb(255 255 255);
+  --color-foreground-rgb:                  255 255 255;
+  --color-foreground-heading:              rgb(255 255 255);
+  --color-foreground-heading-rgb:          255 255 255;
+  --color-primary-button-background:       rgb(21 101 192);
+  --color-primary-button-border:           rgb(21 101 192);
+  --color-primary-button-hover-background: rgb(13 71 161);
+  --color-primary-button-hover-border:     rgb(13 71 161);
+  --color-primary-button-text:             rgb(255 255 255);
+  --color-primary-button-hover-text:       rgb(255 255 255);
 }
 
-/* Variantes seleccionadas → azul océano */
-.variant-picker__option-value--selected,
-[aria-checked="true"][class*="variant"],
-.swatch--selected {
-  background-color: var(--brand-ocean) !important;
-  border-color: var(--brand-ocean) !important;
-  color: #fff !important;
+/* ── Fallback directo en botones (por si las variables no llegan) ── */
+.button[data-style-class="button"],
+.button--primary,
+button[name="add"],
+.button:not(.button--secondary):not(.button--tertiary):not(.button--link) {
+  background-color: rgb(21 101 192) !important;
+  border-color:     rgb(21 101 192) !important;
+  color:            #ffffff !important;
+}
+.button[data-style-class="button"]:hover,
+.button--primary:hover,
+button[name="add"]:hover {
+  background-color: rgb(13 71 161) !important;
+  border-color:     rgb(13 71 161) !important;
 }
 
-/* Links → azul océano */
-a:not([class]) { color: var(--brand-ocean); }
-a:not([class]):hover { color: var(--brand-ocean-hover); }
+/* ── Links en azul océano ── */
+a.link, .link {
+  color: rgb(21 101 192);
+}
+
+/* ── Announcement bar → navy ── */
+.announcement-bar {
+  background-color: rgb(11 31 58) !important;
+  color: #ffffff !important;
+}
