@@ -123,7 +123,17 @@
       data-product-transition="{{ settings.transition_to_main_product }}"
       data-template="{{ template }}"
     >
+      {%- if template == 'index' -%}
+        {%- render 'waves-hero-banner' -%}
+      {%- endif -%}
+
       {{ content_for_layout }}
+
+      {%- if template.name == 'product' -%}
+        <div class="page-width waves-product-extra">
+          {%- render 'waves-product-features' -%}
+        </div>
+      {%- endif -%}
     </main>
 
     <footer>

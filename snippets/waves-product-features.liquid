@@ -1,0 +1,214 @@
+{% comment %} WAVES – Product features + ocean player inyectado via theme.liquid {% endcomment %}
+{{ 'ocean-player.js' | asset_url | script_tag }}
+
+<div class="waves-pf">
+
+  {%- comment -%} ── Boton de preview sonido ── {%- endcomment -%}
+  <div class="waves-pf-player">
+    <p class="waves-pf-player-label">PROBALO ANTES DE COMPRARLO</p>
+    <button id="ocean-play-btn" class="waves-ocean-btn" type="button">
+      <span class="ocean-btn-icon">▶</span>
+      <span class="ocean-btn-label">Escuchá el sonido del mar</span>
+      <span class="ocean-btn-waves">
+        <span></span><span></span><span></span><span></span><span></span>
+      </span>
+    </button>
+    <p class="waves-pf-player-note">Sonido generado en tiempo real — así suena nuestro parlante</p>
+  </div>
+
+  {%- comment -%} ── Descripcion ── {%- endcomment -%}
+  <div class="waves-pf-desc">
+    <h2>El parlante que te lleva al sueño profundo</h2>
+    <p>
+      Diseñado para personas que saben que dormir bien lo cambia todo. Nuestro parlante
+      reproduce con precisión los sonidos de la naturaleza — olas del océano, lluvia suave,
+      selva al amanecer — creando un ambiente sonoro que bloquea distracciones y prepara
+      tu mente para el descanso profundo.
+    </p>
+    <p>
+      No es música. No es ruido blanco genérico. Es la naturaleza tal cual suena, procesada
+      en alta fidelidad para que tu cerebro se relaje de manera natural, sin pastillas ni apps.
+    </p>
+  </div>
+
+  {%- comment -%} ── Caracteristicas ── {%- endcomment -%}
+  <div class="waves-pf-features">
+    <div class="waves-pf-feature">
+      <span>🌊</span>
+      <strong>3 sonidos naturales</strong>
+      <p>Mar, lluvia y naturaleza. Grabados en alta fidelidad para un sonido 100% real.</p>
+    </div>
+    <div class="waves-pf-feature">
+      <span>🔋</span>
+      <strong>12 horas de batería</strong>
+      <p>Toda la noche sin interrupciones. Carga rápida vía USB-C en 2 horas.</p>
+    </div>
+    <div class="waves-pf-feature">
+      <span>📶</span>
+      <strong>Bluetooth 5.0 + modo offline</strong>
+      <p>Conectate al instante o usá los sonidos guardados sin internet.</p>
+    </div>
+    <div class="waves-pf-feature">
+      <span>🛡️</span>
+      <strong>Garantía 30 días</strong>
+      <p>Si no dormís mejor en 30 días, te devolvemos el dinero. Sin preguntas.</p>
+    </div>
+  </div>
+
+  {%- comment -%} ── Para quien es ── {%- endcomment -%}
+  <div class="waves-pf-forwhom">
+    <h3>Ideal para vos si...</h3>
+    <ul>
+      <li>✓ Tardás en dormirte</li>
+      <li>✓ Vivís en un ambiente ruidoso</li>
+      <li>✓ Trabajás bajo mucho estrés</li>
+      <li>✓ Sos madre o padre con sueño liviano</li>
+      <li>✓ Compartís cuarto y te despertás</li>
+      <li>✓ Querés dejar de depender del celular para dormir</li>
+    </ul>
+  </div>
+
+</div>
+
+<style>
+.waves-product-extra { padding-bottom: 64px; }
+.waves-pf { font-family: var(--font-body--family); }
+
+/* Player */
+.waves-pf-player {
+  text-align: center;
+  background: linear-gradient(135deg, #0B1F3A 0%, #1565C0 100%);
+  border-radius: 20px;
+  padding: 40px 24px;
+  margin: 48px 0;
+}
+.waves-pf-player-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+}
+.waves-ocean-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.5);
+  color: #ffffff;
+  border-radius: 60px;
+  padding: 16px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.waves-ocean-btn:hover {
+  background: rgba(255,255,255,0.22);
+  transform: scale(1.03);
+}
+.waves-ocean-btn.playing {
+  border-color: #4FC3F7;
+  box-shadow: 0 0 32px rgba(79,195,247,0.45);
+  animation: wf-pulse 2s ease-in-out infinite;
+}
+@keyframes wf-pulse {
+  0%,100% { box-shadow: 0 0 20px rgba(79,195,247,0.3); }
+  50%      { box-shadow: 0 0 44px rgba(79,195,247,0.65); }
+}
+.ocean-btn-waves { display: none; gap: 3px; align-items: flex-end; height: 20px; }
+.waves-ocean-btn.playing .ocean-btn-waves { display: flex; }
+.ocean-btn-waves span {
+  display: block; width: 3px;
+  background: #4FC3F7; border-radius: 2px;
+  animation: wf-bar 1.2s ease-in-out infinite;
+}
+.ocean-btn-waves span:nth-child(1) { height:8px;  animation-delay:0s; }
+.ocean-btn-waves span:nth-child(2) { height:16px; animation-delay:.15s; }
+.ocean-btn-waves span:nth-child(3) { height:20px; animation-delay:.3s; }
+.ocean-btn-waves span:nth-child(4) { height:14px; animation-delay:.45s; }
+.ocean-btn-waves span:nth-child(5) { height:8px;  animation-delay:.6s; }
+@keyframes wf-bar {
+  0%,100% { transform: scaleY(0.4); }
+  50%      { transform: scaleY(1); }
+}
+.waves-pf-player-note {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.78rem;
+  margin: 14px 0 0;
+}
+
+/* Descripcion */
+.waves-pf-desc { margin: 0 0 48px; }
+.waves-pf-desc h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-foreground-heading, #0B1F3A);
+  margin: 0 0 16px;
+}
+.waves-pf-desc p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-foreground, #333);
+  margin: 0 0 12px;
+  max-width: 680px;
+}
+
+/* Features grid */
+.waves-pf-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.waves-pf-feature {
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 16px;
+  padding: 24px 20px;
+  background: #f8fbff;
+}
+.waves-pf-feature > span { font-size: 2rem; display: block; margin-bottom: 10px; }
+.waves-pf-feature strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0B1F3A;
+  margin-bottom: 6px;
+}
+.waves-pf-feature p {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Para quien */
+.waves-pf-forwhom {
+  background: linear-gradient(135deg, #EEF6FB, #D4EBF7);
+  border-radius: 16px;
+  padding: 32px 28px;
+}
+.waves-pf-forwhom h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0B1F3A;
+  margin: 0 0 20px;
+}
+.waves-pf-forwhom ul {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.waves-pf-forwhom li {
+  font-size: 0.88rem;
+  color: #0B1F3A;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .waves-pf-features { grid-template-columns: 1fr; }
+  .waves-pf-forwhom ul { grid-template-columns: 1fr; }
+}
+</style>

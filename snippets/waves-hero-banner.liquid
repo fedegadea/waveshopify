@@ -1,0 +1,235 @@
+{% comment %} WAVES – Hero banner inyectado desde theme.liquid {% endcomment %}
+<section class="waves-hero-banner">
+  <div class="waves-hero-inner">
+    <div class="waves-hero-badge">🌊 Sonidos de la naturaleza</div>
+    <h1 class="waves-hero-title">
+      Dormite mejor.<br>
+      <span class="waves-hero-accent">Cada noche.</span>
+    </h1>
+    <p class="waves-hero-sub">
+      Parlantes con sonidos del mar, lluvia y naturaleza —<br>
+      diseñados para llevarte al sueño profundo.
+    </p>
+    <div class="waves-hero-actions">
+      <a href="/collections/all" class="waves-btn-primary">
+        Ver parlantes &rarr;
+      </a>
+      <a href="#waves-features" class="waves-btn-ghost">
+        ¿Cómo funciona?
+      </a>
+    </div>
+    <div class="waves-hero-trust">
+      <span>✓ Envío gratis</span>
+      <span>✓ Garantía 30 días</span>
+      <span>✓ Pago seguro</span>
+    </div>
+  </div>
+
+  <div class="waves-hero-bg">
+    <div class="waves-wave waves-wave-1"></div>
+    <div class="waves-wave waves-wave-2"></div>
+    <div class="waves-wave waves-wave-3"></div>
+  </div>
+</section>
+
+{% comment %} Features strip debajo del hero {% endcomment %}
+<section class="waves-strip" id="waves-features">
+  <div class="waves-strip-inner">
+    <div class="waves-strip-item">
+      <span class="waves-strip-icon">🌊</span>
+      <div>
+        <strong>Océano</strong>
+        <span>Olas suaves y continuas</span>
+      </div>
+    </div>
+    <div class="waves-strip-item">
+      <span class="waves-strip-icon">🌧️</span>
+      <div>
+        <strong>Lluvia</strong>
+        <span>Relajante toda la noche</span>
+      </div>
+    </div>
+    <div class="waves-strip-item">
+      <span class="waves-strip-icon">🌿</span>
+      <div>
+        <strong>Naturaleza</strong>
+        <span>Selva, viento, pájaros</span>
+      </div>
+    </div>
+    <div class="waves-strip-item">
+      <span class="waves-strip-icon">💤</span>
+      <div>
+        <strong>Más sueño</strong>
+        <span>Dormís hasta 40% más rápido</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* ── Hero ── */
+.waves-hero-banner {
+  position: relative;
+  background: linear-gradient(160deg, #0B1F3A 0%, #0D2B50 45%, #1565C0 100%);
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 80px 24px;
+}
+.waves-hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+.waves-hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.85);
+  border-radius: 50px;
+  padding: 8px 20px;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 28px;
+}
+.waves-hero-title {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  margin: 0 0 24px;
+  letter-spacing: -0.02em;
+}
+.waves-hero-accent {
+  color: #4FC3F7;
+}
+.waves-hero-sub {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.65;
+  margin: 0 0 40px;
+}
+.waves-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.waves-btn-primary {
+  display: inline-block;
+  background: #1565C0;
+  color: #fff !important;
+  border-radius: 50px;
+  padding: 16px 36px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 8px 30px rgba(21,101,192,0.4);
+}
+.waves-btn-primary:hover {
+  background: #0D47A1;
+  transform: translateY(-2px);
+}
+.waves-btn-ghost {
+  display: inline-block;
+  background: rgba(255,255,255,0.1);
+  color: #fff !important;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 50px;
+  padding: 16px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: background 0.2s;
+}
+.waves-btn-ghost:hover {
+  background: rgba(255,255,255,0.18);
+}
+.waves-hero-trust {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.waves-hero-trust span {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.82rem;
+}
+
+/* Animated waves */
+.waves-hero-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  z-index: 1;
+}
+.waves-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 120px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50% 50% 0 0 / 60px;
+  animation: waves-move 8s ease-in-out infinite;
+}
+.waves-wave-2 {
+  height: 90px;
+  background: rgba(255,255,255,0.03);
+  animation-duration: 11s;
+  animation-delay: -3s;
+}
+.waves-wave-3 {
+  height: 60px;
+  background: rgba(255,255,255,0.05);
+  animation-duration: 14s;
+  animation-delay: -6s;
+}
+@keyframes waves-move {
+  0%,100% { transform: translateX(-25%) scaleY(1); }
+  50%      { transform: translateX(0%)   scaleY(1.15); }
+}
+
+/* ── Features strip ── */
+.waves-strip {
+  background: #0B1F3A;
+  padding: 28px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.waves-strip-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.waves-strip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+}
+.waves-strip-icon { font-size: 1.5rem; }
+.waves-strip-item strong {
+  display: block;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+.waves-strip-item span {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .waves-hero-banner { min-height: 70vh; }
+  .waves-strip-inner { grid-template-columns: repeat(2,1fr); }
+}
+</style>
