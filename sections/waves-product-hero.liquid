@@ -15,15 +15,14 @@
   endif
 -%}
 
-{{ 'base.css' | asset_url | stylesheet_tag }}
 {% render 'buy-buttons-styles' %}
 
 <section class="waves-hero-product" id="waves-hero-product">
 
-  <!-- ── Galería de imágenes ── -->
+  <!-- ── Galería ── -->
   <div class="whp-gallery">
     {%- if current_product.images.size > 0 -%}
-      <div class="whp-gallery__track" id="whp-track">
+      <div class="whp-gallery__track">
         {%- for img in current_product.images -%}
           <div class="whp-gallery__slide{% if forloop.first %} active{% endif %}" data-index="{{ forloop.index0 }}">
             {{
@@ -37,28 +36,20 @@
           </div>
         {%- endfor -%}
       </div>
-
       {%- if current_product.images.size > 1 -%}
         <div class="whp-gallery__thumbs">
           {%- for img in current_product.images -%}
-            <button
-              class="whp-gallery__thumb{% if forloop.first %} active{% endif %}"
-              data-index="{{ forloop.index0 }}"
-              aria-label="Imagen {{ forloop.index }}"
-            >
-              {{
-                img
-                | image_url: width: 120
-                | image_tag:
-                  loading: 'lazy',
-                  alt: img.alt | default: current_product.title
-              }}
+            <button class="whp-gallery__thumb{% if forloop.first %} active{% endif %}"
+              data-index="{{ forloop.index0 }}" type="button" aria-label="Imagen {{ forloop.index }}">
+              {{ img | image_url: width: 120 | image_tag: loading: 'lazy', alt: img.alt }}
             </button>
           {%- endfor -%}
         </div>
       {%- endif -%}
     {%- else -%}
-      <div class="whp-gallery__placeholder"></div>
+      <div class="whp-gallery__placeholder">
+        <div class="whp-gallery__placeholder-icon">🌊</div>
+      </div>
     {%- endif -%}
   </div>
 
@@ -72,8 +63,7 @@
 
       <h1 class="whp-title">{{ current_product.title }}</h1>
 
-      <!-- Precio -->
-      <div class="whp-price" id="whp-price">
+      <div class="whp-price" id="whp-price-{{ section.id }}">
         {%- if current_variant.compare_at_price > current_variant.price -%}
           <span class="whp-price__original">{{ current_variant.compare_at_price | money }}</span>
           <span class="whp-price__sale">{{ current_variant.price | money }}</span>
@@ -84,7 +74,6 @@
         {%- endif -%}
       </div>
 
-      <!-- Beneficios rápidos -->
       {%- if section.settings.benefits != blank -%}
         <div class="whp-benefits">
           {%- assign benefit_list = section.settings.benefits | split: '|' -%}
@@ -94,10 +83,8 @@
         </div>
       {%- endif -%}
 
-      <!-- Separador -->
       <div class="whp-divider"></div>
 
-      <!-- Variantes (si hay más de una) -->
       {%- unless current_product.has_only_default_variant -%}
         <div class="whp-variants">
           {%- for option in current_product.options_with_values -%}
@@ -106,13 +93,9 @@
               <div class="whp-variant-btns">
                 {%- for value in option.values -%}
                   <label class="whp-variant-btn{% if value.selected %} selected{% endif %}{% unless value.available %} unavailable{% endunless %}">
-                    <input
-                      type="radio"
-                      name="options[{{ option.name | escape }}]"
-                      value="{{ value | escape }}"
-                      {% if value.selected %}checked{% endif %}
-                      {% unless value.available %}disabled{% endunless %}
-                    >
+                    <input type="radio" name="options[{{ option.name | escape }}]"
+                      value="{{ value | escape }}" {% if value.selected %}checked{% endif %}
+                      {% unless value.available %}disabled{% endunless %}>
                     {{ value | escape }}
                   </label>
                 {%- endfor -%}
@@ -122,7 +105,6 @@
         </div>
       {%- endunless -%}
 
-      <!-- Formulario de compra -->
       <product-form-component
         data-section-id="{{ section.id }}"
         data-product-id="{{ current_product.id }}"
@@ -132,28 +114,19 @@
         data-quantity-error-max="{{ 'products.product.quantity_error_max' | t }}"
       >
         <div class="visually-hidden" aria-live="assertive" role="status" aria-atomic="true" ref="liveRegion"></div>
-
         {%- form 'product', current_product, id: product_form_id, data-type: 'add-to-cart-form' -%}
           <input type="hidden" name="id" ref="variantId" value="{{ current_variant.id }}">
-
           <div class="whp-form-actions" ref="productFormButtons">
             <div class="whp-form-error hidden" ref="addToCartTextError">
-              <span class="svg-wrapper"></span>
               <span ref="addToCartErrorMessage"></span>
             </div>
-
             <add-to-cart-component
               ref="addToCartButtonContainer"
               data-product-variant-media="{{ current_variant.featured_media.preview_image | image_url: width: 100 }}"
               data-add-to-cart-animation="{{ settings.add_to_cart_animation }}"
             >
-              <button
-                type="submit"
-                name="add"
-                ref="addToCartButton"
-                class="whp-cta-btn"
-                {% unless can_add_to_cart %}disabled{% endunless %}
-              >
+              <button type="submit" name="add" ref="addToCartButton" class="whp-cta-btn"
+                {% unless can_add_to_cart %}disabled{% endunless %}>
                 <span class="add-to-cart-text">
                   {%- if can_add_to_cart -%}
                     <span aria-hidden="true" class="svg-wrapper add-to-cart-icon">
@@ -175,7 +148,6 @@
         {%- endform -%}
       </product-form-component>
 
-      <!-- Garantías -->
       {%- if section.settings.guarantees != blank -%}
         <div class="whp-guarantees">
           {%- assign guarantee_list = section.settings.guarantees | split: '|' -%}
@@ -185,26 +157,19 @@
         </div>
       {%- endif -%}
 
-      <!-- Descripción corta -->
-      {%- if section.settings.show_description and current_product.description != blank -%}
-        <div class="whp-description">
-          {{ current_product.description }}
-        </div>
-      {%- endif -%}
-
     </div>
   </div>
 
-  <!-- Flecha scroll hint -->
+  <!-- Scroll hint -->
   <div class="whp-scroll-hint" aria-hidden="true">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
       <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
 
 </section>
 
-<!-- Wave separator: transición del hero oscuro a la siguiente sección -->
+<!-- Wave separator -->
 <div class="whp-wave-sep" aria-hidden="true">
   <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,40 C360,80 1080,0 1440,40 L1440,72 L0,72 Z" fill="var(--color-background, #ffffff)"/>
@@ -212,45 +177,57 @@
 </div>
 
 <style>
-/* ══════════════════════════════════════════════
-   WAVES PRODUCT HERO — waves-product-hero.liquid
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   WAVES PRODUCT HERO
+   ══════════════════════════════════════════ */
+
+/* Forzar que el wrapper de Shopify no limite la sección */
+.shopify-section:has(.waves-hero-product) {
+  display: block;
+  height: 90vh;
+  min-height: 560px;
+}
+
 .waves-hero-product {
-  position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 90vh;
+  grid-template-columns: 55% 45%;
+  /* Toma el 100% del wrapper de Shopify */
+  height: 100%;
+  width: 100%;
+  position: relative;
   background: #0B1F3A;
   overflow: hidden;
+  /* Anular cualquier padding/margin del tema */
+  margin: 0 !important;
 }
 
-/* ── Gallery (left column) ── */
+/* ── Galería (columna izquierda) ── */
 .whp-gallery {
   position: relative;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   background: #07172C;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+/* Grid stack — todas las slides se superponen sin cambiar position */
 .whp-gallery__track {
   flex: 1;
-  position: relative;
+  min-height: 0;
+  display: grid;
+  grid-template-areas: 'slide';
 }
-
 .whp-gallery__slide {
-  position: absolute;
-  inset: 0;
+  grid-area: slide;
   opacity: 0;
-  transition: opacity 0.45s ease;
+  transition: opacity 0.5s ease;
   pointer-events: none;
 }
 .whp-gallery__slide.active {
   opacity: 1;
-  position: relative;
   pointer-events: auto;
 }
-
 .whp-gallery__img {
   width: 100%;
   height: 100%;
@@ -263,54 +240,65 @@
 .whp-gallery__thumbs {
   display: flex;
   gap: 6px;
-  padding: 12px;
+  padding: 10px 12px;
   overflow-x: auto;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.35);
+  flex-shrink: 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.2) transparent;
 }
 .whp-gallery__thumb {
   flex-shrink: 0;
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid transparent;
   padding: 0;
   background: none;
-  opacity: 0.6;
+  opacity: 0.55;
   transition: all 0.2s;
 }
-.whp-gallery__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.whp-gallery__thumb img { width: 100%; height: 100%; object-fit: cover; }
 .whp-gallery__thumb.active,
-.whp-gallery__thumb:hover {
-  border-color: #4FC3F7;
-  opacity: 1;
+.whp-gallery__thumb:hover { border-color: #4FC3F7; opacity: 1; }
+
+/* Placeholder sin imagen */
+.whp-gallery__placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #07172C 0%, #0d2a4e 100%);
+}
+.whp-gallery__placeholder-icon {
+  font-size: 4rem;
+  opacity: 0.3;
 }
 
-/* ── Buy panel (right column) ── */
+/* ── Panel compra (columna derecha) ── */
 .whp-panel {
+  height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 60px 48px;
-  overflow-y: auto;
   background: linear-gradient(160deg, #0B1F3A 0%, #0d2545 100%);
-  border-left: 1px solid rgba(255,255,255,0.06);
+  border-left: 1px solid rgba(255,255,255,0.05);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 .whp-panel__inner {
+  padding: 48px 44px;
   max-width: 480px;
+  width: 100%;
 }
 
 /* Badge */
 .whp-badge {
   display: inline-block;
-  background: rgba(79,195,247,0.15);
+  background: rgba(79,195,247,0.12);
   border: 1px solid rgba(79,195,247,0.3);
   color: #4FC3F7;
   font-size: 0.72rem;
@@ -319,64 +307,45 @@
   text-transform: uppercase;
   padding: 5px 12px;
   border-radius: 100px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
-/* Title */
+/* Título */
 .whp-title {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: clamp(1.6rem, 2.5vw, 2.4rem);
   font-weight: 800;
   color: #ffffff;
   line-height: 1.15;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   font-family: var(--font-primary--family, inherit);
 }
 
-/* Price */
+/* Precio */
 .whp-price {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 18px;
   flex-wrap: wrap;
 }
-.whp-price__current {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-.whp-price__sale {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #4FC3F7;
-}
-.whp-price__original {
-  font-size: 1.1rem;
-  color: rgba(255,255,255,0.45);
-  text-decoration: line-through;
-}
-.whp-price__badge {
-  background: #1B5E20;
-  color: #A5D6A7;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
+.whp-price__current { font-size: 1.75rem; font-weight: 700; color: #fff; }
+.whp-price__sale    { font-size: 1.75rem; font-weight: 700; color: #4FC3F7; }
+.whp-price__original{ font-size: 1rem; color: rgba(255,255,255,0.4); text-decoration: line-through; }
+.whp-price__badge   { background: #1B5E20; color: #A5D6A7; font-size: 0.73rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
 
-/* Benefits pills */
+/* Beneficios pills */
 .whp-benefits {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 7px;
+  margin-bottom: 18px;
 }
 .whp-benefit {
   background: rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.85);
-  font-size: 0.8rem;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.78rem;
   font-weight: 500;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 20px;
   border: 1px solid rgba(255,255,255,0.1);
 }
@@ -384,225 +353,147 @@
 /* Divider */
 .whp-divider {
   height: 1px;
-  background: rgba(255,255,255,0.08);
-  margin-bottom: 22px;
+  background: rgba(255,255,255,0.07);
+  margin-bottom: 20px;
 }
 
-/* Variants */
-.whp-variants {
-  margin-bottom: 22px;
-}
-.whp-variant-group {
-  margin-bottom: 14px;
-}
+/* Variantes */
+.whp-variants { margin-bottom: 20px; }
+.whp-variant-group { margin-bottom: 12px; }
 .whp-variant-label {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.55);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
 }
-.whp-variant-btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+.whp-variant-btns { display: flex; flex-wrap: wrap; gap: 7px; }
 .whp-variant-btn {
   cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.8);
-  font-size: 0.88rem;
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.15s;
   user-select: none;
 }
 .whp-variant-btn input { display: none; }
 .whp-variant-btn.selected,
-.whp-variant-btn:hover {
-  border-color: #4FC3F7;
-  color: #4FC3F7;
-  background: rgba(79,195,247,0.1);
-}
-.whp-variant-btn.unavailable {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
+.whp-variant-btn:hover { border-color: #4FC3F7; color: #4FC3F7; background: rgba(79,195,247,0.1); }
+.whp-variant-btn.unavailable { opacity: 0.3; cursor: not-allowed; }
 
-/* CTA Button */
-.whp-form-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.whp-form-error {
-  color: #ef5350;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+/* Form */
+.whp-form-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.whp-form-error { color: #ef5350; font-size: 0.83rem; }
 .whp-form-error.hidden { display: none; }
 
+/* Botón CTA */
 .whp-cta-btn {
   width: 100%;
-  padding: 18px 32px;
+  padding: 17px 28px;
   background: linear-gradient(135deg, #1565C0, #0D47A1);
-  color: #ffffff;
+  color: #fff;
   font-size: 1rem;
   font-weight: 700;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.2s;
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 24px rgba(21,101,192,0.4);
+  box-shadow: 0 4px 20px rgba(21,101,192,0.4);
 }
 .whp-cta-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #1E88E5, #1565C0);
   transform: translateY(-1px);
-  box-shadow: 0 8px 32px rgba(21,101,192,0.55);
-}
-.whp-cta-btn:active:not(:disabled) {
-  transform: translateY(0);
+  box-shadow: 0 8px 28px rgba(21,101,192,0.55);
 }
 .whp-cta-btn:disabled {
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.35);
   cursor: not-allowed;
   box-shadow: none;
 }
-/* Inherit add-to-cart animation states from theme */
-.whp-cta-btn .add-to-cart-text {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.whp-cta-btn .add-to-cart-icon svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-.whp-cta-btn .add-to-cart__added {
-  display: none;
-}
+.whp-cta-btn .add-to-cart-text { display: flex; align-items: center; gap: 8px; }
+.whp-cta-btn .add-to-cart-icon svg { width: 18px; height: 18px; fill: currentColor; }
+.whp-cta-btn .add-to-cart__added { display: none; }
 
 /* Guarantees */
 .whp-guarantees {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 24px;
-  padding: 14px 16px;
+  gap: 7px;
+  padding: 12px 14px;
   background: rgba(255,255,255,0.04);
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
 }
 .whp-guarantee {
-  font-size: 0.83rem;
-  color: rgba(255,255,255,0.65);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
 }
-
-/* Description */
-.whp-description {
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.5);
-  line-height: 1.7;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  padding-top: 16px;
-  margin-top: 8px;
-}
-.whp-description p { margin: 0 0 10px; }
 
 /* Scroll hint */
 .whp-scroll-hint {
   position: absolute;
-  bottom: 24px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255,255,255,0.3);
-  animation: whp-bounce 2s ease-in-out infinite;
+  color: rgba(255,255,255,0.25);
+  animation: whp-bounce 2.2s ease-in-out infinite;
   pointer-events: none;
-  z-index: 2;
+  z-index: 5;
 }
 @keyframes whp-bounce {
   0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(6px); }
+  50%       { transform: translateX(-50%) translateY(7px); }
 }
 
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .waves-hero-product {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-  .whp-gallery {
-    height: 55vw;
-    min-height: 300px;
-    max-height: 480px;
-  }
-  .whp-gallery__slide {
-    position: absolute;
-    inset: 0;
-  }
-  .whp-gallery__slide.active {
-    position: absolute;
-  }
-  .whp-panel {
-    padding: 32px 20px 48px;
-    border-left: none;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-  .whp-panel__inner {
-    max-width: 100%;
-  }
-  .whp-scroll-hint {
-    display: none;
-  }
-}
-@media (max-width: 480px) {
-  .whp-title {
-    font-size: 1.6rem;
-  }
-  .whp-gallery {
-    height: 70vw;
-  }
-}
-
-/* ── Visually hidden (reuse theme utility) ── */
-.waves-hero-product .visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  white-space: nowrap;
-}
-
-/* ── Wave separator ── */
+/* Wave separator */
 .whp-wave-sep {
   display: block;
   background: #0B1F3A;
   line-height: 0;
-  margin-top: -2px;
+  margin-top: -1px;
 }
-.whp-wave-sep svg {
-  width: 100%;
-  height: 72px;
-  display: block;
+.whp-wave-sep svg { width: 100%; height: 64px; display: block; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .shopify-section:has(.waves-hero-product) {
+    height: auto;
+    min-height: auto;
+  }
+  .waves-hero-product {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .whp-gallery {
+    height: 56vw;
+    min-height: 280px;
+    max-height: 460px;
+  }
+  .whp-panel { height: auto; }
+  .whp-panel__inner { padding: 28px 20px 40px; max-width: 100%; }
+  .whp-scroll-hint { display: none; }
+  .whp-wave-sep svg { height: 40px; }
+}
+@media (max-width: 480px) {
+  .whp-title { font-size: 1.5rem; }
+  .whp-gallery { height: 65vw; }
+}
+
+/* Visually hidden */
+.waves-hero-product .visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
 }
 </style>
 
@@ -611,67 +502,51 @@
   const section = document.getElementById('waves-hero-product');
   if(!section) return;
 
-  // Galería: cambio de imagen al clickear thumbnail
   const thumbs = section.querySelectorAll('.whp-gallery__thumb');
   const slides = section.querySelectorAll('.whp-gallery__slide');
 
-  function setSlide(index){
-    slides.forEach((s,i) => s.classList.toggle('active', i === index));
-    thumbs.forEach((t,i) => t.classList.toggle('active', i === index));
+  function setSlide(idx){
+    slides.forEach((s,i) => s.classList.toggle('active', i===idx));
+    thumbs.forEach((t,i) => t.classList.toggle('active', i===idx));
   }
-
-  thumbs.forEach(btn => {
-    btn.addEventListener('click', () => setSlide(+btn.dataset.index));
-  });
-
-  // Variant picker: actualizar precio e input hidden al cambiar variante
-  const variantInput = section.querySelector('[ref="variantId"]');
-  const priceEl = section.querySelector('#whp-price');
-  const variantBtns = section.querySelectorAll('.whp-variant-btn');
+  thumbs.forEach(btn => btn.addEventListener('click', () => setSlide(+btn.dataset.index)));
 
   {% if current_product.variants.size > 1 %}
   const variants = {{ current_product.variants | json }};
+  const variantInput = section.querySelector('[ref="variantId"]');
+  const priceEl = section.querySelector('#whp-price-{{ section.id }}');
+  const variantBtns = section.querySelectorAll('.whp-variant-btn');
 
   variantBtns.forEach(btn => {
     btn.querySelector('input')?.addEventListener('change', () => {
       variantBtns.forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
-      updateVariant();
+      syncVariant();
     });
   });
 
-  function getSelectedOptions(){
-    const opts = {};
+  function syncVariant(){
+    const checked = {};
     section.querySelectorAll('.whp-variants input[type="radio"]:checked').forEach(r => {
-      const name = r.name.replace('options[','').replace(']','');
-      opts[name] = r.value;
+      const key = r.name.replace(/^options\[(.+)\]$/, '$1');
+      checked[key] = r.value;
     });
-    return opts;
-  }
-
-  function updateVariant(){
-    const opts = getSelectedOptions();
     const match = variants.find(v =>
-      v.options.every((opt, i) => opt === opts[Object.keys(opts)[i]])
+      v.options.every((opt, i) => opt === Object.values(checked)[i])
     );
     if(!match) return;
     if(variantInput) variantInput.value = match.id;
-
-    // Actualizar precio
-    if(priceEl && match.price){
-      const price = (match.price / 100).toLocaleString('es-AR', {style:'currency', currency:'ARS'});
-      if(match.compare_at_price && match.compare_at_price > match.price){
-        const orig = (match.compare_at_price / 100).toLocaleString('es-AR', {style:'currency', currency:'ARS'});
-        const pct = Math.round((match.compare_at_price - match.price) * 100 / match.compare_at_price);
-        priceEl.innerHTML = `<span class="whp-price__original">${orig}</span><span class="whp-price__sale">${price}</span><span class="whp-price__badge">-${pct}%</span>`;
-      } else {
-        priceEl.innerHTML = `<span class="whp-price__current">${price}</span>`;
-      }
-    }
-
-    // Actualizar estado del botón
     const btn = section.querySelector('.whp-cta-btn');
     if(btn) btn.disabled = !match.available;
+    if(priceEl && match.price){
+      const fmt = n => (n/100).toLocaleString('es-AR', {style:'currency', currency:'ARS', minimumFractionDigits:2});
+      if(match.compare_at_price && match.compare_at_price > match.price){
+        const pct = Math.round((match.compare_at_price - match.price)*100/match.compare_at_price);
+        priceEl.innerHTML = `<span class="whp-price__original">${fmt(match.compare_at_price)}</span><span class="whp-price__sale">${fmt(match.price)}</span><span class="whp-price__badge">-${pct}%</span>`;
+      } else {
+        priceEl.innerHTML = `<span class="whp-price__current">${fmt(match.price)}</span>`;
+      }
+    }
   }
   {% endif %}
 })();
@@ -696,20 +571,12 @@
     {
       "type": "textarea",
       "id": "guarantees",
-      "label": "Garantías / Trust badges (separados por |)",
+      "label": "Garantías (separadas por |)",
       "default": "🛡️ Garantía 30 días sin preguntas | 🚚 Envío gratis a todo el país | 🔒 Pago 100% seguro"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_description",
-      "label": "Mostrar descripción del producto",
-      "default": false
     }
   ],
   "presets": [
-    {
-      "name": "Hero del producto"
-    }
+    { "name": "Hero del producto" }
   ]
 }
 {% endschema %}
