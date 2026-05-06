@@ -746,6 +746,150 @@
   }
 {% endstylesheet %}
 
+{% comment %} ── Waves: autoplay + mute toggle para videos del hero ── {% endcomment %}
+<script>
+(function(){
+  function initHeroVideos(heroEl){
+    if(!heroEl) return;
+
+    const videos = heroEl.querySelectorAll('video');
+    if(!videos.length) return;
+
+    // Forzar atributos correctos en todos los videos
+    videos.forEach(v => {
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+      v.muted    = true;
+      v.autoplay = true;
+      v.loop     = true;
+      v.controls = false;
+
+      const tryPlay = () => {
+        const p = v.play();
+        if(p !== undefined){
+          p.catch(() => {
+            // Si falla (política del navegador), esperar interacción
+            document.addEventListener('touchstart', () => v.play(), { once: true });
+            document.addEventListener('click',      () => v.play(), { once: true });
+          });
+        }
+      };
+
+      if(v.readyState >= 2) { tryPlay(); }
+      else { v.addEventListener('canplay', tryPlay, { once: true }); }
+    });
+
+    // Si el hero sale del viewport y vuelve, reanudar
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          videos.forEach(v => { if(e.isIntersecting) v.play().catch(()=>{}); });
+        });
+      }, { threshold: 0.1 }).observe(heroEl);
+    }
+
+    // Botón mute/unmute — solo se agrega si hay video
+    if(heroEl.querySelector('.waves-sound-toggle')) return; // evitar duplicados
+
+    const btn = document.createElement('button');
+    btn.className = 'waves-sound-toggle';
+    btn.setAttribute('aria-label', 'Activar sonido');
+    btn.innerHTML = `
+      <span class="waves-sound-toggle__icon waves-sound-toggle__icon--muted">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+      </span>
+      <span class="waves-sound-toggle__icon waves-sound-toggle__icon--unmuted" style="display:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </span>
+      <span class="waves-sound-toggle__label">Sonido</span>
+    `;
+
+    btn.addEventListener('click', () => {
+      const muted = !videos[0].muted;
+      videos.forEach(v => { v.muted = muted; });
+      btn.querySelector('.waves-sound-toggle__icon--muted').style.display  = muted ? '' : 'none';
+      btn.querySelector('.waves-sound-toggle__icon--unmuted').style.display = muted ? 'none' : '';
+      btn.setAttribute('aria-label', muted ? 'Activar sonido' : 'Silenciar');
+      btn.classList.toggle('waves-sound-toggle--on', !muted);
+    });
+
+    heroEl.querySelector('.hero__container')?.appendChild(btn);
+  }
+
+  // Inicializar todos los heroes en la página
+  document.querySelectorAll('.hero-wrapper').forEach(initHeroVideos);
+
+  // Soporte para carga dinámica (Shopify theme editor)
+  document.addEventListener('shopify:section:load', e => {
+    initHeroVideos(e.target.querySelector('.hero-wrapper'));
+  });
+})();
+</script>
+
+<style>
+/* Ocultar controles nativos y overlay de play en todos los navegadores */
+.hero__media-grid video::-webkit-media-controls { display: none !important; }
+.hero__media-grid video::-webkit-media-controls-panel { display: none !important; }
+.hero__media-grid video::-webkit-media-controls-play-button { display: none !important; }
+.hero__media-grid video::-webkit-media-controls-start-playback-button { display: none !important; }
+.hero__media-grid video { -webkit-appearance: none; }
+
+/* Botón mute/unmute */
+.waves-sound-toggle {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 100px;
+  color: #ffffff;
+  padding: 8px 14px 8px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+.waves-sound-toggle:hover {
+  background: rgba(0,0,0,0.65);
+  border-color: rgba(255,255,255,0.5);
+}
+.waves-sound-toggle--on {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.5);
+}
+.waves-sound-toggle__icon {
+  display: flex;
+  align-items: center;
+}
+.waves-sound-toggle__label {
+  line-height: 1;
+}
+@media (max-width: 749px) {
+  .waves-sound-toggle {
+    bottom: 16px;
+    right: 16px;
+    padding: 7px 12px 7px 9px;
+    font-size: 0.74rem;
+  }
+}
+</style>
+
 {% schema %}
 {
   "name": "t:names.hero",
