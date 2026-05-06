@@ -43,7 +43,7 @@
           "name": "CTA",
           "settings": {
             "label": "Comprar ahora →",
-            "link": "shopify://collections/all",
+            "link": "shopify://products/electronics-and-accessories-example-product-4",
             "open_in_new_tab": false,
             "style_class": "button",
             "width": "fit-content",
